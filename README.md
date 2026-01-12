@@ -31,3 +31,16 @@ This project draws a hand-tied bouquet of pink tulips with **3D-style petals, cu
 1. Make sure Python 3 is installed:
    ```bash
    python --version
+
+2. Save the file as:
+
+tulip_bouquet.py
+
+
+Run the program:
+
+```bash
+python tulip_bouquet.py
+
+
+
