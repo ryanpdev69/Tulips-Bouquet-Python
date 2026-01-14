@@ -3,16 +3,20 @@ import math
 import time
 
 class TulipBouquet:
-    """A class to create an animated 3D tulip bouquet with ribbon over ~15 seconds."""
+    """A class to create an animated 3D tulip bouquet with ribbon over ~30 seconds."""
     
     def __init__(self):
         self.screen = turtle.Screen()
-        self.screen.setup(width=900, height=900)
-        self.screen.bgcolor("#0a0a0a")
-        self.screen.title("15-Second Animated Tulip Bouquet")
         
-        # Increased the update frequency (25) to make drawing look faster
-        self.screen.tracer(1, 25) 
+        # Auto fullscreen setup
+        self.root = self.screen.getcanvas().winfo_toplevel()
+        self.root.attributes('-fullscreen', True)
+        
+        self.screen.bgcolor("#0a0a0a")
+        self.screen.title("30-Second Animated Tulip Bouquet")
+        
+        # Slower tracer for smoother animation
+        self.screen.tracer(1, 15) 
         
         self.t = turtle.Turtle()
         self.t.speed(0) # Fastest movement speed
@@ -37,6 +41,14 @@ class TulipBouquet:
             (100, 30, 26, 2, 80),
             (0, 20, 34, 3, 90)
         ]
+        
+        # Bind Escape key to exit fullscreen
+        self.screen.onkey(self.exit_fullscreen, "Escape")
+        self.screen.listen()
+    
+    def exit_fullscreen(self):
+        """Exit fullscreen mode when Escape is pressed."""
+        self.root.attributes('-fullscreen', False)
     
     def draw_petal(self, size, colors):
         shadow, base, highlight = colors
@@ -185,36 +197,41 @@ class TulipBouquet:
                 self.t.goto(x, y)
 
     def draw(self):
-        # 1. Stems (Fast)
+        # 1. Stems (~5 seconds total)
         for x, y, size, col_idx, angle in self.bouquet_data:
             self.draw_stem(0, -280, x, y)
-            time.sleep(0.05)
+            time.sleep(0.4)  # Increased from 0.05 to 0.4
         
-        # 2. Leaves
+        # 2. Leaves (~4 seconds total)
         for x, y, size, col_idx, angle in self.bouquet_data:
             if abs(x) > 40:
                 leaf_x = x * 0.5
                 leaf_y = y * 0.5 - 120
                 self.draw_leaf(leaf_x, leaf_y, angle + 35, 60)
-                time.sleep(0.08)
+                time.sleep(0.5)  # Increased from 0.08 to 0.5
 
-        # 3. Ribbon & Bow
+        # 3. Ribbon & Bow (~2 seconds)
         self.draw_ribbon_wrap(-65, -240, 130)
+        time.sleep(0.5)
         self.draw_bow(0, -240)
-        time.sleep(0.2)
+        time.sleep(1.0)
 
-        # 4. Tulip heads (~8-9 seconds total)
+        # 4. Tulip heads (~15 seconds total)
         for x, y, size, col_idx, angle in self.bouquet_data:
             self.draw_tulip(x, y, size, self.shades[col_idx], angle)
-            time.sleep(0.3) # Shorter wait between blooms
+            time.sleep(1.3)  # Increased from 0.3 to 1.3
 
-        # 5. Final Details
+        # 5. Final Details (~3 seconds)
+        time.sleep(0.5)
         self.draw_sparkles()
+        time.sleep(1.0)
+        
         self.t.penup()
         self.t.goto(0, 360)
         self.t.pencolor("#FFB6D9")
         self.t.write("Hand-Tied Pink Bouquet", align="center", font=("Georgia", 28, "italic"))
         
+        time.sleep(1.0)
         self.screen.update()
 
     def run(self):
